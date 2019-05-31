@@ -70,6 +70,7 @@ public class Main extends ListenerAdapter {
                         if (!command.execute(event, msg)) {
                             event.getChannel().sendMessage("An error occurred while performing this commnad").queue();
                         }
+                        return;
                     }
                 }
             }
