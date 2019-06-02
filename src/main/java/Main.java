@@ -14,11 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main extends ListenerAdapter {
 
     private static Logger logger;
-    private static HashMap<Command, Integer> commands = new HashMap<>();
     private static final String PREFIX = ">";
 
     public static void main(String[] args) throws Exception {
@@ -26,16 +27,17 @@ public class Main extends ListenerAdapter {
             System.err.println("No token found!");
             System.exit(-1);
         }
-        commands.put(new Play(), ConnectedState.CONNECTED);
-        commands.put(new Skip(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Exec(), ConnectedState.NOT_CONNECTED);
-        commands.put(new Clear(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Stop(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Pause(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Resume(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Queue(), ConnectedState.NOT_CONNECTED);
-        commands.put(new Volume(), ConnectedState.CONNECTED_WITH_BOT);
-        commands.put(new Shuffle(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Play(), ConnectedState.CONNECTED);
+        FlexiUtils.commands.put(new Skip(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Exec(), ConnectedState.NOT_CONNECTED);
+        FlexiUtils.commands.put(new Clear(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Stop(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Pause(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Resume(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Queue(), ConnectedState.NOT_CONNECTED);
+        FlexiUtils.commands.put(new Volume(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Shuffle(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Help(), ConnectedState.NOT_CONNECTED);
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))
@@ -51,6 +53,13 @@ public class Main extends ListenerAdapter {
                 .token(System.getenv("dbl_key"))
                 .botId("339215794418352129")
                 .build();
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                FlexiUtils.api.setStats(jda.getGuilds().size());
+            }
+        }, 10, 300000);
     }
 
     private Main() {
@@ -75,7 +84,7 @@ public class Main extends ListenerAdapter {
 
         if (guild != null && !event.getAuthor().isBot() && msg[0].startsWith(PREFIX)) {
             msg[0] = msg[0].substring(PREFIX.length());
-            for (Map.Entry<Command, Integer> command : commands.entrySet()) {
+            for (Map.Entry<Command, Integer> command : FlexiUtils.commands.entrySet()) {
                 for (String identifier : command.getKey().getIdentifiers()) {
                     logger.info(msg[0] + " -> " + identifier);
                     if (identifier.equalsIgnoreCase(msg[0])) {
