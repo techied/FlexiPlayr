@@ -2,10 +2,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import command.*;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.*;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
@@ -19,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main extends ListenerAdapter {
+
     private static Logger logger;
     private static HashMap<Command, Integer> commands = new HashMap<>();
     private static final String PREFIX = ">";
@@ -100,3 +98,4 @@ public class Main extends ListenerAdapter {
         super.onMessageReceived(event);
     }
 }
+
