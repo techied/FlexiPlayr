@@ -81,7 +81,7 @@ public class Main extends ListenerAdapter {
                 for (String identifier : command.getKey().getIdentifiers()) {
                     logger.info(msg[0] + " -> " + identifier);
                     if (identifier.equalsIgnoreCase(msg[0])) {
-                        if (command.getValue() == ConnectedState.CONNECTED_WITH_BOT && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getMemberById(event.getJDA().getSelfUser().getId()).getVoiceState().getChannel())) {
+                        if (command.getValue() == ConnectedState.CONNECTED_WITH_BOT && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getSelfMember().getVoiceState().getChannel())) {
                             event.getChannel().sendMessage(new EmbedBuilder().setTitle("\u274C You need to be in the voice channel with the bot to perform this command.").build()).queue();
                             return;
                         } else if (command.getValue() == ConnectedState.CONNECTED && !event.getMember().getVoiceState().inVoiceChannel()) {
