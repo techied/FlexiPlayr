@@ -3,9 +3,9 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import command.*;
 import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
@@ -15,12 +15,12 @@ import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Main extends ListenerAdapter {
     private static Logger logger;
-    private static ArrayList<Command> commands = new ArrayList<>();
+    private static HashMap<Command, Integer> commands = new HashMap<>();
     private static final String PREFIX = ">";
 
     public static void main(String[] args) throws Exception {
@@ -28,15 +28,16 @@ public class Main extends ListenerAdapter {
             System.err.println("No token found!");
             System.exit(-1);
         }
-        commands.add(new Play());
-        commands.add(new Skip());
-        commands.add(new Exec());
-        commands.add(new Clear());
-        commands.add(new Stop());
-        commands.add(new Pause());
-        commands.add(new Resume());
-        commands.add(new Queue());
-        commands.add(new Volume());
+        commands.put(new Play(), ConnectedState.CONNECTED);
+        commands.put(new Skip(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Exec(), ConnectedState.NOT_CONNECTED);
+        commands.put(new Clear(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Stop(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Pause(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Resume(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Queue(), ConnectedState.NOT_CONNECTED);
+        commands.put(new Volume(), ConnectedState.CONNECTED_WITH_BOT);
+        commands.put(new Shuffle(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))
@@ -76,11 +77,18 @@ public class Main extends ListenerAdapter {
 
         if (guild != null && !event.getAuthor().isBot() && msg[0].startsWith(PREFIX)) {
             msg[0] = msg[0].substring(PREFIX.length());
-            for (Command command : commands) {
-                for (String identifier : command.getIdentifiers()) {
+            for (Map.Entry<Command, Integer> command : commands.entrySet()) {
+                for (String identifier : command.getKey().getIdentifiers()) {
                     logger.info(msg[0] + " -> " + identifier);
                     if (identifier.equalsIgnoreCase(msg[0])) {
-                        if (!command.execute(event, msg)) {
+                        if (command.getValue() == ConnectedState.CONNECTED_WITH_BOT && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getMemberById(event.getJDA().getSelfUser().getId()).getVoiceState().getChannel())) {
+                            event.getChannel().sendMessage(new EmbedBuilder().setTitle("\u274C You need to be in the voice channel with the bot to perform this command.").build()).queue();
+                            return;
+                        } else if (command.getValue() == ConnectedState.CONNECTED && !event.getMember().getVoiceState().inVoiceChannel()) {
+                            event.getChannel().sendMessage(new EmbedBuilder().setTitle("\u274C You need to be in a voice channel to perform this command.").build()).queue();
+                            return;
+                        }
+                        if (!command.getKey().execute(event, msg)) {
                             event.getChannel().sendMessage("An error occurred while performing this commnad").queue();
                         }
                         return;

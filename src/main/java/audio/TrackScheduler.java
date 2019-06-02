@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class TrackScheduler extends AudioEventAdapter {
     private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    private BlockingQueue<AudioTrack> queue;
 
     /**
      * @param player The audio player this scheduler uses
@@ -52,7 +52,9 @@ public class TrackScheduler extends AudioEventAdapter {
     public BlockingQueue<AudioTrack> getQueue(){
         return queue;
     }
-
+    public void setQueue(BlockingQueue<AudioTrack> newQueue){
+        queue = newQueue;
+    }
     /**
      * Start the next track, stopping the current one if it is playing.
      */
