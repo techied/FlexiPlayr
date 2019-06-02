@@ -23,10 +23,16 @@ public class Play extends Command {
 
     @Override
     public boolean execute(MessageReceivedEvent event, String[] input) {
-        if (input.length < 2){
+        event.getChannel().sendTyping().queue();
+        if (input.length < 2) {
             return false;
         }
-        loadAndPlay(event.getTextChannel(), input[1], event.getMember());
+        if (input[1].contains("http://") || input[1].contains("https://")) {
+            loadAndPlay(event.getTextChannel(), input[1], event.getMember());
+        } else {
+            loadAndPlay(event.getTextChannel(), "ytsearch:" + input[1], event.getMember());
+        }
+
         return true;
     }
 
@@ -38,14 +44,7 @@ public class Play extends Command {
             public void trackLoaded(AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTitle("Adding track to queue");
-                eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
-                eb.setDescription(track.getInfo().title);
-                eb.addField("Track length", String.format("%d min, %d sec",
-                        TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length),
-                        TimeUnit.MILLISECONDS.toSeconds(track.getInfo().length) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length))
-                ), true);
-                channel.sendMessage(eb.build()).queue();
+                playTrack(track, eb, channel);
                 channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
 
                 play(channel.getGuild(), musicManager, track, member);
@@ -53,7 +52,6 @@ public class Play extends Command {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-
                 if (playlist.getTracks().size() == 0) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Something went wrong trying to play this playlist");
@@ -62,14 +60,22 @@ public class Play extends Command {
                     return;
                 }
 
-                EmbedBuilder eb = new EmbedBuilder();
-                eb.setTitle("Adding playlist to queue");
-                eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
-                eb.setDescription(playlist.getName());
-                eb.addField("Track count", playlist.getTracks().size() + "", true);
-                channel.sendMessage(eb.build()).queue();
-                for (AudioTrack track : playlist.getTracks()) {
+                if (trackUrl.startsWith("ytsearch:")) {
+                    AudioTrack track = playlist.getTracks().get(0);
+                    EmbedBuilder eb = new EmbedBuilder();
+                    eb.setTitle("Adding song to queue from search");
+                    playTrack(track, eb, channel);
                     play(channel.getGuild(), musicManager, track, member);
+                } else {
+                    EmbedBuilder eb = new EmbedBuilder();
+                    eb.setTitle("Adding playlist to queue");
+                    eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
+                    eb.setDescription(playlist.getName());
+                    eb.addField("Track count", playlist.getTracks().size() + "", true);
+                    channel.sendMessage(eb.build()).queue();
+                    for (AudioTrack track : playlist.getTracks()) {
+                        play(channel.getGuild(), musicManager, track, member);
+                    }
                 }
             }
 
@@ -83,6 +89,17 @@ public class Play extends Command {
                 channel.sendMessage("Could not play: " + exception.getMessage()).queue();
             }
         });
+    }
+
+    private void playTrack(AudioTrack track, EmbedBuilder eb, TextChannel channel) {
+        eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
+        eb.setDescription(track.getInfo().title);
+        eb.addField("Track length", String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length),
+                TimeUnit.MILLISECONDS.toSeconds(track.getInfo().length) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length))
+        ), true);
+        channel.sendMessage(eb.build()).queue();
     }
 
     private void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, Member member) {

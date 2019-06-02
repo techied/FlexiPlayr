@@ -1,13 +1,17 @@
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import command.*;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,10 +21,13 @@ import java.util.HashMap;
 public class Main extends ListenerAdapter {
     private static Logger logger;
     private static ArrayList<Command> commands = new ArrayList<>();
-
     private static final String PREFIX = ">";
 
     public static void main(String[] args) throws Exception {
+        if (System.getenv("flexi_token") == null) {
+            System.err.println("No token found!");
+            System.exit(-1);
+        }
         commands.add(new Play());
         commands.add(new Skip());
         commands.add(new Exec());
@@ -28,17 +35,23 @@ public class Main extends ListenerAdapter {
         commands.add(new Stop());
         commands.add(new Pause());
         commands.add(new Resume());
-        if (System.getenv("flexi_token") == null) {
-            System.err.println("No token found!");
-            System.exit(-1);
-        }
+        commands.add(new Queue());
+        commands.add(new Volume());
+        FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))
                 .addEventListener(new Main())
+                .addEventListener(FlexiUtils.waiter)
+                .setGame(Game.playing("music for some people"))
                 .build().awaitReady();
+        jda.getPresence().setGame(Game.playing("music for " + jda.getGuilds().size() + " servers"));
         for (Guild g : jda.getGuilds()) {
             System.out.println(g.getName());
         }
+        FlexiUtils.api = new DiscordBotListAPI.Builder()
+                .token(System.getenv("dbl_key"))
+                .botId("339215794418352129")
+                .build();
     }
 
     private Main() {

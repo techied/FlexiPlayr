@@ -1,12 +1,17 @@
 package command;
 
 import audio.GuildMusicManager;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.dv8tion.jda.core.entities.Guild;
+import org.discordbots.api.client.DiscordBotListAPI;
 
 import java.util.Map;
 
 public class FlexiUtils {
+
+    public static EventWaiter waiter;
+    public static DiscordBotListAPI api;
 
     public static AudioPlayerManager playerManager;
     public static Map<Long, GuildMusicManager> musicManagers;
