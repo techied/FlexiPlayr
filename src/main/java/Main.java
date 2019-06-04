@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Spark;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class Main extends ListenerAdapter {
         FlexiUtils.commands.put(new Queue(), ConnectedState.NOT_CONNECTED);
         FlexiUtils.commands.put(new Volume(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.commands.put(new Shuffle(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Leave(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.commands.put(new Help(), ConnectedState.NOT_CONNECTED);
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
@@ -57,9 +59,14 @@ public class Main extends ListenerAdapter {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                FlexiUtils.api.setStats(jda.getGuilds().size());
+                FlexiUtils.api.setStats(jda.getGuildCache().asList().size());
             }
         }, 10, 300000);
+        Spark.post("/webhook", (req, res) -> {
+            logger.info(req.body());
+            logger.info(res.body());
+            return "0K";
+        });//TODO:HANDLE
     }
 
     private Main() {

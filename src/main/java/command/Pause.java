@@ -12,6 +12,7 @@ public class Pause extends Command {
     @Override
     public boolean execute(MessageReceivedEvent event, String[] input) {
         getGuildAudioPlayer(event.getGuild()).scheduler.pause();
+        event.getTextChannel().sendMessage("\u23F8 Paused the player!").queue();
         return true;
     }
 }
