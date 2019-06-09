@@ -28,6 +28,8 @@ jobs: # a collection of steps
           # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: target/surefire-reports
 
+      - run: tree # figure out where the file is lol
+
       - store_artifacts: # store the uberjar as an artifact
           # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: target/src/FlexiPlayr-1.0.0-SNAPSHOT-jar-with-dependencies.jar
