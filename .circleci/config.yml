@@ -33,11 +33,25 @@ jobs: # a collection of steps
       - store_artifacts: # store the uberjar as an artifact
           # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: target/FlexiPlayr-1.0.0-SNAPSHOT-jar-with-dependencies.jar
-deployment:
-  production:
-    branch: master
-    commands:
-      - echo 'deploying master branch'
-      - ssh -v $DROPLET_USER@$DROPLET_IP "rm FlexiPlayr*.jar"
-      - scp target/FlexiPlayr-1.0.0-SNAPSHOT-jar-with-dependencies.jar $DROPLET_USER@$DROPLET_IP:/root/
-      - ssh -v $DROPLET_USER@$DROPLET_IP "./flexiplayr.sh"
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy to DigitalOcean
+          command: |
+            echo 'deploying master branch'
+            ssh -v $DROPLET_USER@$DROPLET_IP "rm FlexiPlayr*.jar"
+            scp target/FlexiPlayr-1.0.0-SNAPSHOT-jar-with-dependencies.jar $DROPLET_USER@$DROPLET_IP:/root/
+            ssh -v $DROPLET_USER@$DROPLET_IP "./flexiplayr.sh"
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
