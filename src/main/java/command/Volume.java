@@ -1,9 +1,11 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 package command;
 
-import com.jagrosh.jdautilities.menu.Menu;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 

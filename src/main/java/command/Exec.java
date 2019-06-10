@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 package command;
 
 import groovy.lang.Binding;
@@ -8,6 +12,7 @@ public class Exec extends Command {
     public Exec(){
         identifiers = new String[]{"exec"};
     }
+
     @Override
     public boolean execute(MessageReceivedEvent event, String[] input) {
         if (event.getAuthor().getIdLong() == 270737906644156416L) {

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 package command;
 
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;

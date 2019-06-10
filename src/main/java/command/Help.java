@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 package command;
 
 import com.jagrosh.jdautilities.menu.Paginator;

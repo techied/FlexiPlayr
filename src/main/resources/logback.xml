@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright (c) 2019 Donovan Nelson
+  -->
+
 <configuration>
     <timestamp key="byDay" datePattern="yyyyMMdd'T'HHmmss" />
 

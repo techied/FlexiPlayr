@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;

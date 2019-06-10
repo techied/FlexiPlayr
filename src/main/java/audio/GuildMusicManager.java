@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2019 Donovan Nelson
+ */
+
 package audio;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
