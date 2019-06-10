@@ -1,9 +1,6 @@
 version: 2.1 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-    branches:
-      only:
-        - master
 
     working_directory: ~/build-flexiplayr # directory where steps will run
 
@@ -49,3 +46,12 @@ jobs: # a collection of steps
             disown
             sleep 10
             exit
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build:
+        requires:
+        branches:
+          only: master
