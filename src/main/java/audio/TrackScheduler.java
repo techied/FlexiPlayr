@@ -41,6 +41,10 @@ public class TrackScheduler extends AudioEventAdapter {
         player.setPaused(!player.isPaused());
     }
 
+    public boolean getPaused() {
+        return player.isPaused();
+    }
+
     public void clear() {
         queue.clear();
     }
@@ -49,12 +53,14 @@ public class TrackScheduler extends AudioEventAdapter {
         player.setPaused(false);
     }
 
-    public BlockingQueue<AudioTrack> getQueue(){
+    public BlockingQueue<AudioTrack> getQueue() {
         return queue;
     }
-    public void setQueue(BlockingQueue<AudioTrack> newQueue){
+
+    public void setQueue(BlockingQueue<AudioTrack> newQueue) {
         queue = newQueue;
     }
+
     /**
      * Start the next track, stopping the current one if it is playing.
      */

@@ -2,7 +2,10 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import command.*;
-import net.dv8tion.jda.core.*;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
@@ -40,11 +43,13 @@ public class Main extends ListenerAdapter {
         FlexiUtils.commands.put(new Shuffle(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.commands.put(new Leave(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.commands.put(new Help(), ConnectedState.NOT_CONNECTED);
+        FlexiUtils.commands.put(new PlayerMenu(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))
                 .addEventListener(new Main())
                 .addEventListener(FlexiUtils.waiter)
+                .addEventListener(new ReactionListener())
                 .setGame(Game.playing("music for some people"))
                 .build().awaitReady();
         jda.getPresence().setGame(Game.playing("music for " + jda.getGuilds().size() + " servers"));
@@ -95,7 +100,7 @@ public class Main extends ListenerAdapter {
                 for (String identifier : command.getKey().getIdentifiers()) {
                     logger.info(msg[0] + " -> " + identifier);
                     if (identifier.equalsIgnoreCase(msg[0])) {
-                        if (command.getValue() == ConnectedState.CONNECTED_WITH_BOT && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getSelfMember().getVoiceState().getChannel())) {
+                        if (command.getValue() == ConnectedState.CONNECTED_WITH_BOT && event.getMember().getVoiceState() != null && !event.getMember().getVoiceState().getChannel().equals(event.getGuild().getSelfMember().getVoiceState().getChannel())) {
                             event.getChannel().sendMessage(new EmbedBuilder().setTitle("\u274C You need to be in the voice channel with the bot to perform this command.").build()).queue();
                             return;
                         } else if (command.getValue() == ConnectedState.CONNECTED && !event.getMember().getVoiceState().inVoiceChannel()) {
