@@ -45,4 +45,5 @@ jobs: # a collection of steps
             disown
             ssh -v $DROPLET_USER@$DROPLET_IP "./start.sh" &
             disown
+            sleep 10
             exit
