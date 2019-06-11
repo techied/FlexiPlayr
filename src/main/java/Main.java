@@ -56,7 +56,7 @@ public class Main extends ListenerAdapter {
                 .addEventListener(new ReactionListener())
                 .setGame(Game.playing("music for some people"))
                 .build().awaitReady();
-        jda.getPresence().setGame(Game.playing("music for " + jda.getGuilds().size() + " servers"));
+        jda.getPresence().setGame(Game.playing("on" + jda.getGuilds().size() + " servers // >help"));
         for (Guild g : jda.getGuilds()) {
             System.out.println(g.getName());
         }
