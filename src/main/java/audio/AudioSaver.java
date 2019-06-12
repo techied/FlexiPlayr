@@ -62,8 +62,7 @@ public class AudioSaver implements AudioReceiveHandler {
 
             InputStream b_in = new ByteArrayInputStream(finalizedArr);
             File file = File.createTempFile("audioSave-" + guildID, ".wav");
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(
-                    "audioSave-" + guildID + ".bin"));
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(File.createTempFile("audioSaveRaw-" + guildID, ".wav")));
             dos.write(finalizedArr);
             AudioInputStream stream = new AudioInputStream(b_in, AudioReceiveHandler.OUTPUT_FORMAT,
                     finalizedArr.length);
