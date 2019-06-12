@@ -45,10 +45,12 @@ public class Record extends Command {
     }
 
     private void closeSaveAndSend(MessageReceivedEvent event, AudioSaver saver) {
+        event.getChannel().sendMessage("\uD83C\uDF99 Processing...").complete();
+        event.getChannel().sendTyping().queue();
         event.getGuild().getAudioManager().closeAudioConnection();
         logger.info("Saving audio for " + event.getGuild().getId());
         File file = saver.save(event.getGuild().getId());
         logger.info("Audio saved, uploading using path " + file.getAbsolutePath());
-        event.getChannel().sendMessage(new EmbedBuilder().setColor(new Color(0x7289da)).setTitle("\uD83C\uDF99 \uD83D\uDCBE Saved audio!").build()).addFile(file).queue();
+        event.getChannel().sendMessage(new EmbedBuilder().setColor(new Color(0x7289da)).setTitle("\uD83D\uDCBE Saved audio!").build()).addFile(file).queue();
     }
 }

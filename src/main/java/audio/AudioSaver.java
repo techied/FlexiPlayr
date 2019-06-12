@@ -7,17 +7,18 @@ package audio;
 import net.dv8tion.jda.core.audio.AudioReceiveHandler;
 import net.dv8tion.jda.core.audio.CombinedAudio;
 import net.dv8tion.jda.core.audio.UserAudio;
-import net.dv8tion.jda.core.entities.User;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
+
+import static command.FlexiUtils.logger;
 
 public class AudioSaver implements AudioReceiveHandler {
-    private ConcurrentLinkedQueue<byte[]> saveQueue = new ConcurrentLinkedQueue<>();
+    private List<byte[]> saveQueue = new ArrayList<>();
 
 
     @Override
@@ -32,13 +33,8 @@ public class AudioSaver implements AudioReceiveHandler {
 
     @Override
     public void handleCombinedAudio(CombinedAudio combinedAudio) {
-        for (User user : combinedAudio.getUsers()) {
-            System.out.println(user.getId());
-        }
         double volume = 1.0D;
         saveQueue.add(combinedAudio.getAudioData(volume));
-
-        System.out.println("ADDED!");
     }
 
     @Override
@@ -47,17 +43,17 @@ public class AudioSaver implements AudioReceiveHandler {
 
     public File save(String guildID) {
         try {
-            ArrayList<Byte> bytesProper = new ArrayList<>();
-            for (int i = 0; i < saveQueue.size(); i++) {
-                for (byte b : saveQueue.poll()) {
-                    bytesProper.add(b);
-                    System.out.println(Integer.toBinaryString(b));
-                }
+            logger.info("Queue size for " + guildID + ": " + saveQueue.size());
+            int size = 0;
+            for (byte[] bs : saveQueue) {
+                size += bs.length;
             }
-            System.out.println(saveQueue.size());
-            byte[] finalizedArr = new byte[bytesProper.size()];
-            for (int i = 0; i < bytesProper.size(); i++) {
-                finalizedArr[i] = bytesProper.get(i);
+            byte[] finalizedArr = new byte[size];
+            int i = 0;
+            for (byte[] bs : saveQueue) {
+                for (byte b : bs) {
+                    finalizedArr[i] = b;
+                }
             }
             InputStream b_in = new ByteArrayInputStream(finalizedArr);
             File file = File.createTempFile("audioSave-" + guildID, ".wav");
@@ -67,11 +63,11 @@ public class AudioSaver implements AudioReceiveHandler {
             AudioInputStream stream = new AudioInputStream(b_in, AudioReceiveHandler.OUTPUT_FORMAT,
                     finalizedArr.length);
             AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
-            System.out.println("File saved: " + file.getName() + ", bytes: "
+            logger.info("File saved for " + guildID + ": " + file.getName() + ", bytes: "
                     + finalizedArr.length);
             return file;
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            logger.error("Exception: " + e);
         }
         return null;
     }
