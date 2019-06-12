@@ -56,9 +56,6 @@ public class AudioSaver implements AudioReceiveHandler {
             }
             FlexiUtils.logger.info("Queue size for " + guildID + ": " + saveQueue.size());
             byte[] finalizedArr = Bytes.toArray(bytesProper);
-            for (int i = 0; i < bytesProper.size(); i++) {
-                finalizedArr[i] = bytesProper.get(i);
-            }
 
             InputStream b_in = new ByteArrayInputStream(finalizedArr);
             File file = File.createTempFile("audioSave-" + guildID, ".wav");
