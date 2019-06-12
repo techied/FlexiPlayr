@@ -17,6 +17,7 @@ import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 public class Play extends Command {
@@ -48,6 +49,7 @@ public class Play extends Command {
             public void trackLoaded(AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTitle("Adding track to queue");
+                eb.setColor(new Color(0x7289da));
                 playTrack(track, eb, channel);
                 channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
 
@@ -59,6 +61,7 @@ public class Play extends Command {
                 if (playlist.getTracks().size() == 0) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Something went wrong trying to play this playlist");
+                    eb.setColor(new Color(0x7289da));
                     eb.setDescription("There might be some songs missing.\nAdd some and try again!");
                     channel.sendMessage(eb.build()).queue();
                     return;
@@ -68,6 +71,7 @@ public class Play extends Command {
                     AudioTrack track = playlist.getTracks().get(0);
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Adding song to queue from search");
+                    eb.setColor(new Color(0x7289da));
                     playTrack(track, eb, channel);
                     play(channel.getGuild(), musicManager, track, member);
                 } else {
@@ -75,6 +79,7 @@ public class Play extends Command {
                     eb.setTitle("Adding playlist to queue");
                     eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
                     eb.setDescription(playlist.getName());
+                    eb.setColor(new Color(0x7289da));
                     eb.addField("Track count", playlist.getTracks().size() + "", true);
                     channel.sendMessage(eb.build()).queue();
                     for (AudioTrack track : playlist.getTracks()) {
@@ -98,6 +103,7 @@ public class Play extends Command {
     private void playTrack(AudioTrack track, EmbedBuilder eb, TextChannel channel) {
         eb.setAuthor("YouTube", null, "https://cdn.discordapp.com/emojis/535586488801558538.png");
         eb.setDescription(track.getInfo().title);
+        eb.setColor(new Color(0x7289da));
         eb.addField("Track length", String.format("%d min, %d sec",
                 TimeUnit.MILLISECONDS.toMinutes(track.getInfo().length),
                 TimeUnit.MILLISECONDS.toSeconds(track.getInfo().length) -

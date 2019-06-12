@@ -7,6 +7,7 @@ package command;
 import audio.AudioSaver;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.audio.AudioSendHandler;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.managers.AudioManager;
@@ -45,12 +46,13 @@ public class Record extends Command {
     }
 
     private void closeSaveAndSend(MessageReceivedEvent event, AudioSaver saver) {
-        event.getChannel().sendMessage("\uD83C\uDF99 Processing...").complete();
+        Message toDel = event.getChannel().sendMessage("\uD83C\uDF99 Processing...").complete();
         event.getChannel().sendTyping().queue();
         event.getGuild().getAudioManager().closeAudioConnection();
         logger.info("Saving audio for " + event.getGuild().getId());
         File file = saver.save(event.getGuild().getId());
         logger.info("Audio saved, uploading using path " + file.getAbsolutePath());
         event.getChannel().sendMessage(new EmbedBuilder().setColor(new Color(0x7289da)).setTitle("\uD83D\uDCBE Saved audio!").build()).addFile(file).queue();
+        toDel.delete().queue();
     }
 }
