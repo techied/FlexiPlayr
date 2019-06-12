@@ -16,7 +16,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import org.discordbots.api.client.DiscordBotListAPI;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
 
@@ -25,10 +24,11 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static command.FlexiUtils.PREFIX;
+import static command.FlexiUtils.logger;
+
 public class Main extends ListenerAdapter {
 
-    private static Logger logger;
-    private static final String PREFIX = ">";
 
     public static void main(String[] args) throws Exception {
         if (System.getenv("flexi_token") == null) {
@@ -48,6 +48,7 @@ public class Main extends ListenerAdapter {
         FlexiUtils.commands.put(new Leave(), ConnectedState.CONNECTED_WITH_BOT);
         FlexiUtils.commands.put(new Help(), ConnectedState.NOT_CONNECTED);
         FlexiUtils.commands.put(new PlayerMenu(), ConnectedState.CONNECTED_WITH_BOT);
+        FlexiUtils.commands.put(new Record(), ConnectedState.CONNECTED);
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))

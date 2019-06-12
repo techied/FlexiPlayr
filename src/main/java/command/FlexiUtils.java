@@ -9,6 +9,7 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.dv8tion.jda.core.entities.Guild;
 import org.discordbots.api.client.DiscordBotListAPI;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +18,8 @@ public class FlexiUtils {
 
     public static EventWaiter waiter;
     public static DiscordBotListAPI api;
-
+    public static final String PREFIX = ">";
+    public static Logger logger;
     public static HashMap<Command, Integer> commands = new HashMap<>();
 
     public static AudioPlayerManager playerManager;
