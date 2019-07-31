@@ -42,7 +42,7 @@ public class Record extends Command {
         });
         manager.setReceivingHandler(saver);
         event.getGuild().getAudioManager().openAudioConnection(channel);
-        FlexiUtils.waiter.waitForEvent(MessageReceivedEvent.class, evt -> evt.getAuthor().getId().equalsIgnoreCase(event.getAuthor().getId()) && evt.getMessage().getContentRaw().equalsIgnoreCase(FlexiUtils.PREFIX + "rend"), evt -> closeSaveAndSend(evt, saver), 1, TimeUnit.MINUTES, () -> closeSaveAndSend(event, saver));
+        FlexiUtils.waiter.waitForEvent(MessageReceivedEvent.class, evt -> evt.getAuthor().getId().equalsIgnoreCase(event.getAuthor().getId()) && evt.getMessage().getContentRaw().equalsIgnoreCase(FlexiUtils.PREFIX + "rend"), evt -> closeSaveAndSend(evt, saver), 20, TimeUnit.SECONDS, () -> closeSaveAndSend(event, saver));
         return true;
     }
 
