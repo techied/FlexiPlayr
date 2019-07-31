@@ -5,15 +5,16 @@
 package command;
 
 import audio.AudioSaver;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.audio.AudioSendHandler;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.managers.AudioManager;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.audio.AudioSendHandler;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 
 import static command.FlexiUtils.logger;
@@ -35,8 +36,8 @@ public class Record extends Command {
             }
 
             @Override
-            public byte[] provide20MsAudio() {
-                return new byte[0];
+            public ByteBuffer provide20MsAudio() {
+                return ByteBuffer.wrap(new byte[0]);
             }
         });
         manager.setReceivingHandler(saver);

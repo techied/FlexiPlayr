@@ -7,7 +7,7 @@ package command;
 import audio.GuildMusicManager;
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.Logger;
 

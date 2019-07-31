@@ -6,15 +6,15 @@ import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import command.*;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
@@ -52,12 +52,10 @@ public class Main extends ListenerAdapter {
         FlexiUtils.waiter = new EventWaiter();
         JDA jda = new JDABuilder(AccountType.BOT)
                 .setToken(System.getenv("flexi_token"))
-                .addEventListener(new Main())
-                .addEventListener(FlexiUtils.waiter)
-                .addEventListener(new ReactionListener())
-                .setGame(Game.playing("music for some people"))
+                .addEventListeners(new Main(), FlexiUtils.waiter, new ReactionListener())
+                .setActivity(Activity.playing("music for some people"))
                 .build().awaitReady();
-        jda.getPresence().setGame(Game.playing("on " + jda.getGuilds().size() + " servers // >help"));
+        jda.getPresence().setActivity(Activity.playing("on " + jda.getGuilds().size() + " servers // >help"));
         for (Guild g : jda.getGuilds()) {
             System.out.println(g.getName());
         }

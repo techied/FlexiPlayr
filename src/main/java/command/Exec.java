@@ -6,7 +6,7 @@ package command;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Exec extends Command {
     public Exec(){
